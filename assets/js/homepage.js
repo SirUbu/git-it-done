@@ -1,5 +1,13 @@
-var getUserRepos = function() {
-    fetch("https://api.github.com/users/sirubu/repos");
-};
+var getUserRepos = function(user) {
+    // format the github api url
+    var apiUrl = `https://api.github.com/users/${user}/repos`;
 
-getUserRepos();
+    // mare a request to the url
+    fetch(apiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+        });
+};
