@@ -10,6 +10,7 @@ var formSubmitHandler = function(event) {
     var username = nameInputEl.value.trim();
 
     if (username) {
+        repoContainerEl.textContent = "Please wait...";
         getUserRepos(username);
         nameInputEl.value = "";
     } else {
@@ -23,13 +24,19 @@ var getUserRepos = function(user) {
     var apiUrl = `https://api.github.com/users/${user}/repos`;
 
     // mare a request to the url
-    fetch(apiUrl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            displayRepos(data, user);
-        });
+    fetch(apiUrl).then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                displayRepos(data, user);
+            });
+        } else {
+            repoContainerEl.textContent = "";
+            alert(`Error: ${response.statusText}`);
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect to GitHub.")
+    });
 };
 
 // function to display api inquiry to page
@@ -37,10 +44,16 @@ var displayRepos = function(repos, searchTerm) {
     repoContainerEl.textContent = "";
     repoSearchTerm.textContent = searchTerm;
 
+    // check if api returned 
+    if (repos.length === 0) {
+        repoContainerEl.textContent = "No repositories found.";
+        return;
+    }
+
     // loop over repos and display to dom
     for (var i = 0; i < repos.length; i++) {
         // format repo name
-        var repoName = repos[i].owner.login + "/" + repos[i].name;
+        var repoName = `${repos[i].owner.login}/${repos[i].name}`;
 
         // create a container for each repo
         var repoEl = document.createElement("div");
