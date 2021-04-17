@@ -1,6 +1,6 @@
 // query selectors
 var issuesContainerEl = document.querySelector("#issues-container");
-
+var limitWarningEl = document.querySelector("#limit-warning");
 
 // function to fetch API request
 var getRepoIssues = function(repo) {
@@ -14,7 +14,13 @@ var getRepoIssues = function(repo) {
             response.json().then(function(data) {
                 // pass to displayIssues function
                 displayIssues(data);
-            })
+
+                // check if api has paginated issues
+                if(response.headers.get("Link")) {
+                    // send to displayWarning function
+                    displayWarning(repo);
+                }
+            });
         } else {
             issuesContainerEl.textContent = "There was a problem with your request.";
         }
@@ -67,4 +73,19 @@ var displayIssues = function(issues) {
     }
 };
 
-getRepoIssues("sirubu/git-it-done");
+// function to display issue cap warning
+var displayWarning = function(repo) {
+    // add text to warning container
+    limitWarningEl.textContent = "To see more than 30 issues, visit ";
+
+    // add link to warning container
+    var linkEl = document.createElement("a");
+    linkEl.textContent = "See More Issues on GitHub.com";
+    linkEl.setAttribute("href", `https://github.com/${repo}/issues`);
+    linkEl.setAttribute("target", "_blank");
+
+    // append to warning container
+    limitWarningEl.appendChild(linkEl);
+};
+
+getRepoIssues("facebook/react");
