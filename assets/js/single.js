@@ -11,11 +11,17 @@ var getRepoName = function() {
     // split string to isolate just the name/repo
     var repoName = queryString.split("=")[1];
 
-    // pass repoName to api function
-    getRepoIssues(repoName);
-
-    // update DOM to show repoName
-    repoNameEl.textContent = repoName;
+    // check that the repoName is valid
+    if(repoName) {
+        // update DOM to show repoName
+        repoNameEl.textContent = repoName;
+        
+        // pass repoName to api function
+        getRepoIssues(repoName);
+    } else {
+        // if no repo was give, redirect to the homepage
+        document.location.replace("./index.html");
+    }
 };
 
 // function to fetch API request
@@ -38,7 +44,8 @@ var getRepoIssues = function(repo) {
                 }
             });
         } else {
-            issuesContainerEl.textContent = "There was a problem with your request.";
+            // redirect to homepage
+            document.location.replace("./index.html");
         }
     })
     .catch(function(error) {
