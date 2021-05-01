@@ -14,7 +14,8 @@ var formSubmitHandler = function(event) {
         getUserRepos(username);
         nameInputEl.value = "";
     } else {
-        alert("Please enter a GiHub username.")
+        repoSearchTerm.textContent = "";
+        repoContainerEl.textContent = "Please enter a GiHub username.";
     }
 };
 
@@ -30,13 +31,13 @@ var getUserRepos = function(user) {
                 displayRepos(data, user);
             });
         } else {
-            repoContainerEl.textContent = "";
-            alert(`Error: ${response.statusText}`);
+            repoSearchTerm.textContent = "";
+            repoContainerEl.textContent = "There was no GitHub user by that name... try your search again.";
         }
     })
     .catch(function(error) {
-        alert("Unable to connect to GitHub.")
-    });
+        repoSearchTerm.textContent = "";
+        repoContainerEl.textContent = "Unable to connect to GitHub... try your search again later.";    });
 };
 
 // function to display api inquiry to page
