@@ -1,6 +1,22 @@
 // query selectors
 var issuesContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name");
+
+// user query search passed to page to get user repo name
+var getRepoName = function() {
+    // get query string of search
+    var queryString = document.location.search;
+
+    // split string to isolate just the name/repo
+    var repoName = queryString.split("=")[1];
+
+    // pass repoName to api function
+    getRepoIssues(repoName);
+
+    // update DOM to show repoName
+    repoNameEl.textContent = repoName;
+};
 
 // function to fetch API request
 var getRepoIssues = function(repo) {
@@ -88,4 +104,4 @@ var displayWarning = function(repo) {
     limitWarningEl.appendChild(linkEl);
 };
 
-getRepoIssues("facebook/react");
+getRepoName();
